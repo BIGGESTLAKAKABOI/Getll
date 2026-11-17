@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff;padding:20px}
+.box{max-width:360px;margin:60px auto;background:#111;border:1px solid #333;border-radius:16px;padding:28px;text-align:center}
+input{width:100%;padding:14px;margin:8px 0;border-radius:10px;border:1px solid #333;background:#1e293b;color:#fff}
+button{width:100%;padding:12px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.card{background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin:12px auto;max-width:500px;text-align:left}
+</style>
+</head>
+<body>
+<div class="box" id="loginBox">
+<h1 style="color:#c9a86a">Admin Login</h1>
+<input type="password" id="pass" placeholder="Password">
+<button onclick="doLogin()" style="background:#c9a86a">Enter</button>
+</div>
+<div id="dashBox" style="display:none;max-width:500px;margin:0 auto">
+<h2 style="color:#c9a86a;text-align:center">Admin Panel — Intact</h2>
+<p style="text-align:center;color:#888;font-size:12px">Linked to main site • Even if you change index.html, this file no go change</p>
+<div class="card"><b style="color:#e8c47a">Orders:</b> <span id="totalOrders">0</span> <button onclick="clearOrders()" style="float:right;width:auto;padding:5px 10px;background:#7f1d1d;color:#fff;border-radius:6px">Clear</button></div>
+<div class="card"><b style="color:#e8c47a">Orders — Username + ID</b><div id="orderList"></div></div>
+<button onclick="loadOrders()" style="background:#1a7a4a;color:#fff;max-width:500px;margin:0 auto;display:block">Refresh Orders</button>
+</div>
+<script>
+function getOrders(){ try{ return JSON.parse(localStorage.getItem('lagos_orders')||localStorage.getItem('lagos_orders_backup')||'[]'); }catch(e){ return []; } }
+function doLogin(){
+  if(document.getElementById('pass').value==='ademide2026'){
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('dashBox').style.display='block';
+    loadOrders();
+  } else alert('Wrong password');
+}
+function loadOrders(){
+  var orders=getOrders();
+  document.getElementById('totalOrders').innerText=orders.length;
+  document.getElementById('orderList').innerHTML=orders.length?orders.map(function(o){return '<div style="background:#222;padding:10px;border-radius:8px;margin:6px 0;font-size:13px"><b>'+o.pkg+'</b> - '+o.status+'<br>Username: <b style="color:#e8c47a">'+o.username+'</b><br>Password: <b style="color:#e8c47a">'+ (o.password||'') +'</b><br>ID: '+(o.gameID||'')+'<br>'+o.time+'</div>';}).join(''):'<p style="color:#888">No orders yet</p>';
+}
+function clearOrders(){ if(confirm('Clear all?')){ localStorage.removeItem('lagos_orders'); localStorage.removeItem('lagos_orders_backup'); loadOrders(); } }
+</script>
+</body>
+</html>
